@@ -8,6 +8,7 @@ import (
 func setProtectedRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 
 	router.GET("/", browseHandler)
+	router.GET("/share", shareHandler)
 	return router
 }
 

@@ -14,11 +14,22 @@ var browseHandler gin.HandlerFunc = func(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, dirs)
 	} else {
-		var results []Dir
-		for _, dir := range dirs {
-			results = append(results, Dir{Path: dir, Hash: ""})
+		context.JSON(http.StatusOK, constructDirsSlice(dirs))
+	}
+}
+
+// shareHandler is a handler for generating hash for the directory
+var shareHandler gin.HandlerFunc = func(context *gin.Context) {
+	path := context.Query("path")
+	dir, err := files.ConstructPath(configuration.BasePath, path)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, nil)
+	} else {
+		dirStruct, err := toggleDirHash(dir)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, nil)
 		}
-		context.JSON(http.StatusOK, results)
+		context.JSON(http.StatusOK, dirStruct)
 	}
 }
 

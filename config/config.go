@@ -7,10 +7,9 @@ import (
 
 // Database is the database configuration struct
 type Database struct {
-	Username string
-	Password string
 	Host     string
-	Port     int
+	Password string
+	Db       int
 }
 
 // User is the user configuration struct

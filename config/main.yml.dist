@@ -4,10 +4,9 @@ prod: true
 server: 'localhost:8080'
 
 database:
-  username: 'postgres'
-  password: 'password'
-  host: 'localhost'
-  port: 5432
+  host: 'localhost:6379'
+  password: ''
+  db: 9
 
 user:
   username: 'user'
