@@ -1,11 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"github.com/webmalc/go-send-backend/config"
 )
 
+var configuration config.Config
+
+func init() {
+	configuration = config.GetConfig()
+}
+
 func main() {
-	config := config.GetConfig()
-	fmt.Println(config)
+	runServer(&configuration)
 }

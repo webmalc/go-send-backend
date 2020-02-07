@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
+	"github.com/webmalc/go-send-backend/utils"
 )
 
 // Database is the database configuration struct
@@ -13,11 +13,20 @@ type Database struct {
 	Port     int
 }
 
+// User is the user configuration struct
+type User struct {
+	Username string
+	Password string
+}
+
 // Config is the main configuration struct
 type Config struct {
 	BasePath string
 	MaxLevel int
+	Prod     bool
+	Server   string
 	Database Database
+	User     User
 }
 
 // GetConfig return the main configuration structure
@@ -25,14 +34,13 @@ func GetConfig() Config {
 	var config Config
 	viper.SetConfigName("main")
 	viper.AddConfigPath("./config")
+
 	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("fatal error configuration file: %s", err))
-	}
+	utils.ProcessFatalError(err)
+
 	err = viper.Unmarshal(&config)
-	if err != nil {
-		panic(fmt.Errorf("unable to decode into struct, %s", err))
-	}
+	utils.ProcessFatalError(err)
+
 	return config
 
 }
