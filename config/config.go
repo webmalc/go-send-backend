@@ -21,6 +21,7 @@ type User struct {
 // Config is the main configuration struct
 type Config struct {
 	BasePath string
+	ZipPath  string
 	Host     string
 	Prod     bool
 	Server   string

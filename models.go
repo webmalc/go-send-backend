@@ -48,6 +48,14 @@ func (dir *Dir) setURL() *Dir {
 	return dir
 }
 
+// generateZip generates zip for the Dir object
+func generateZip(dir *Dir) (string, error) {
+	if dir.Path != "" && dir.Hash != "" {
+		return utils.ZipDir(dir.Path, configuration.ZipPath, dir.Hash)
+	}
+	return "", errors.New("unable to generate a zip archive")
+}
+
 // toggleHash toggles the Dir hash
 func (dirStruct *Dir) toggleHash() (*Dir, error) {
 	if dirStruct.Hash == "" {
@@ -57,11 +65,16 @@ func (dirStruct *Dir) toggleHash() (*Dir, error) {
 			return dirStruct, err
 		}
 		dirStruct.Hash = hash
+		_, err = generateZip(dirStruct)
+		if err != nil {
+			return dirStruct, err
+		}
 	} else {
 		_, err := db.Del(dirStruct.Path).Result()
 		if err != nil {
 			return dirStruct, err
 		}
+		utils.DeleteFile(configuration.ZipPath, dirStruct.Hash)
 		dirStruct.Hash = ""
 	}
 	dirStruct.setURL()

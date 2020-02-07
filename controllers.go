@@ -28,8 +28,9 @@ var shareHandler gin.HandlerFunc = func(context *gin.Context) {
 		dirStruct, err := toggleDirHash(dir)
 		if err != nil {
 			context.JSON(http.StatusBadRequest, nil)
+		} else {
+			context.JSON(http.StatusOK, dirStruct)
 		}
-		context.JSON(http.StatusOK, dirStruct)
 	}
 }
 
@@ -41,6 +42,14 @@ var getDirectoryHandler gin.HandlerFunc = func(context *gin.Context) {
 	if err != nil {
 		context.AbortWithStatus(http.StatusNotFound)
 	} else {
-		context.JSON(http.StatusOK, dir)
+		zip, err := generateZip(&dir)
+		if err != nil {
+			context.AbortWithStatus(http.StatusNotFound)
+		}
+		context.Header("Content-Description", "File Transfer")
+		context.Header("Content-Transfer-Encoding", "binary")
+		context.Header("Content-Disposition", "attachment; filename=photos.zip")
+		context.Header("Content-Type", "application/octet-stream")
+		context.File(zip)
 	}
 }
