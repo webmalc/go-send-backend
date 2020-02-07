@@ -21,7 +21,7 @@ type User struct {
 // Config is the main configuration struct
 type Config struct {
 	BasePath string
-	MaxLevel int
+	Host     string
 	Prod     bool
 	Server   string
 	Database Database

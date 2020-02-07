@@ -35,5 +35,12 @@ var shareHandler gin.HandlerFunc = func(context *gin.Context) {
 
 // getDirectoryHandler is a handler for getting directories
 var getDirectoryHandler gin.HandlerFunc = func(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"link": "test"})
+	hash := context.Param("hash")
+	base := context.Param("base")
+	dir, err := GetDirByHash(hash, base)
+	if err != nil {
+		context.AbortWithStatus(http.StatusNotFound)
+	} else {
+		context.JSON(http.StatusOK, dir)
+	}
 }

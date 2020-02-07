@@ -15,6 +15,6 @@ func setProtectedRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 // Defines the public routes
 func setPublicRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 
-	router.GET("/get", getDirectoryHandler)
+	router.GET("/get/:hash/:base", getDirectoryHandler)
 	return router
 }

@@ -1,7 +1,7 @@
 basePath: '/path/to/directories'
-maxLevel: 10
 prod: true
 server: 'localhost:8080'
+host: 'http://localhost:8000'
 
 database:
   host: 'localhost:6379'
