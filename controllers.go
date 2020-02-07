@@ -14,7 +14,11 @@ var browseHandler gin.HandlerFunc = func(context *gin.Context) {
 	if err != nil {
 		context.JSON(http.StatusBadRequest, dirs)
 	} else {
-		context.JSON(http.StatusOK, dirs)
+		var results []Dir
+		for _, dir := range dirs {
+			results = append(results, Dir{Path: dir, Hash: ""})
+		}
+		context.JSON(http.StatusOK, results)
 	}
 }
 
