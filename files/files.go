@@ -1,14 +1,17 @@
 package files
 
 import (
+	"archive/zip"
 	"errors"
+	"io"
 	"io/ioutil"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
 )
 
-// isSubPath checks if the given dest is a child directory
+// Checks if the given dest is a child directory
 // of the base directory
 func isSubPath(baseDir string, dest string) bool {
 	dest, _ = filepath.EvalSymlinks(dest)
@@ -23,7 +26,7 @@ func isSubPath(baseDir string, dest string) bool {
 	return true
 }
 
-// ConstructPath checks and construct the dest
+// Checks and construct the dest
 func ConstructPath(baseDir string, dest string) (string, error) {
 	if dest == "" {
 		dest = baseDir
@@ -36,7 +39,7 @@ func ConstructPath(baseDir string, dest string) (string, error) {
 	return dest + "/", nil
 }
 
-// GetDirectories gets a list of directories and files
+// Gets a list of directories and files
 func GetDirectories(baseDir string, dest string) ([]string, error) {
 	dest, err := ConstructPath(baseDir, dest)
 	var result []string
@@ -55,4 +58,63 @@ func GetDirectories(baseDir string, dest string) ([]string, error) {
 		}
 	}
 	return result, nil
+}
+
+// Zips directory
+func ZipDir(dir string, dest string, name string) (string, error) {
+	destinationPath := dest + name + ".zip"
+	if _, err := os.Stat(destinationPath); err == nil {
+		return destinationPath, nil
+	}
+	err := RecursiveZip(dir, destinationPath)
+	if err != nil {
+		return "", err
+	}
+	return destinationPath, nil
+}
+
+//  Deletes the zip file with the provided name and destination path
+func DeleteZip(dest string, name string) error {
+	destinationPath := dest + name + ".zip"
+	err := os.Remove(destinationPath)
+	return err
+}
+
+// Recursive zips the directory
+func RecursiveZip(pathToZip, destinationPath string) error {
+	destinationFile, err := os.Create(destinationPath)
+	if err != nil {
+		return err
+	}
+	myZip := zip.NewWriter(destinationFile)
+	err = filepath.Walk(pathToZip, func(filePath string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		relPath := strings.TrimPrefix(filePath, filepath.Dir(pathToZip))
+		zipFile, err := myZip.Create(relPath)
+		if err != nil {
+			return err
+		}
+		fsFile, err := os.Open(filePath)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(zipFile, fsFile)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	err = myZip.Close()
+	if err != nil {
+		return err
+	}
+	return nil
 }

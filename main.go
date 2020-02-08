@@ -9,6 +9,7 @@ import (
 var configuration config.Config
 var db *redis.Client
 
+// Initializes the main variables
 func init() {
 	configuration = config.GetConfig()
 	db = redis.NewClient(&redis.Options{
@@ -22,6 +23,7 @@ func init() {
 
 }
 
+// Run the script
 func main() {
 	runServer(&configuration)
 }

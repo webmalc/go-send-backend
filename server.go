@@ -6,7 +6,7 @@ import (
 	"github.com/webmalc/go-send-backend/utils"
 )
 
-// runServer runs server
+// Configures and runs the HTTP server
 func runServer(config *config.Config) {
 	if config.Prod {
 		gin.SetMode(gin.ReleaseMode)
