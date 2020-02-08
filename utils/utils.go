@@ -12,10 +12,12 @@ func ProcessFatalError(err error) {
 	}
 }
 
+var randReader = rand.Read
+
 // Generates UUID
 func GeneateUUID() string {
 	b := make([]byte, 16)
-	_, err := rand.Read(b)
+	_, err := randReader(b)
 	if err != nil {
 		panic(err)
 	}
