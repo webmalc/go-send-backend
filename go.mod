@@ -9,5 +9,6 @@ require (
 	github.com/nsf/gocode v0.0.0-20190302080247-5bee97b48836 // indirect
 	github.com/spf13/viper v1.6.2
 	github.com/stamblerre/gocode v1.0.0 // indirect
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/tools v0.0.0-20200206050830-dd0d5d485177 // indirect
 )

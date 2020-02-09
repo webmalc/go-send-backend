@@ -42,8 +42,6 @@ func testTearDown() {
 	if err != nil {
 		panic(err)
 	}
-	os.Setenv("GOENV", "")
-
 }
 
 // Setup the package

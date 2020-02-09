@@ -6,8 +6,7 @@ import (
 	"github.com/webmalc/go-send-backend/utils"
 )
 
-// Configures and runs the HTTP server
-func runServer(config *config.Config) {
+func setupRouter(config *config.Config) *gin.Engine {
 	if config.Prod {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -21,6 +20,12 @@ func runServer(config *config.Config) {
 	setProtectedRoutes(protected_router)
 	setPublicRoutes(public_router)
 
+	return router
+}
+
+// Configures and runs the HTTP server
+func runServer(config *config.Config) {
+	router := setupRouter(config)
 	err := router.Run(config.Server)
 	utils.ProcessFatalError(err)
 }
