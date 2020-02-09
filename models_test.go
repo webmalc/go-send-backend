@@ -1,67 +1,48 @@
 package main
 
 import (
-	"encoding/base64"
 	"os"
 	"testing"
 )
 
-var path string
-var pathEncoded string
-var hash string
-var expectedURL string
-
-// Initializes the main variables
-func init() {
-	os.Setenv("GOENV", "test")
-	path = "/test/path/"
-	pathEncoded = base64.StdEncoding.EncodeToString([]byte(path))
-	hash = "testhash"
-	expectedURL = configuration.Host + "/public/get/" + hash + "/" + pathEncoded
-	err := db.Set(path, hash, 0).Err()
-	if err != nil {
-		panic(err)
-	}
-}
-
 // Should construct a Dir structure
 func TestDir_constructor(t *testing.T) {
 	dir := Dir{}
-	dir.constructor(path)
-	if dir.Hash != hash {
-		t.Errorf("Expected hash %s, got %s", hash, dir.Hash)
+	dir.constructor(testPath)
+	if dir.Hash != testHash {
+		t.Errorf("Expected hash %s, got %s", testHash, dir.Hash)
 	}
-	if dir.URL != expectedURL {
-		t.Errorf("Expected URL %s, got %s", expectedURL, dir.URL)
+	if dir.URL != testExpectedURL {
+		t.Errorf("Expected URL %s, got %s", testExpectedURL, dir.URL)
 	}
 }
 
 // Should get a hash from the database
 func TestDir_setHashFromDB(t *testing.T) {
-	dir := Dir{Path: path}
+	dir := Dir{Path: testPath}
 	dir.setHashFromDB()
-	if dir.Hash != hash {
-		t.Errorf("Expected hash %s, got %s", hash, dir.Hash)
+	if dir.Hash != testHash {
+		t.Errorf("Expected hash %s, got %s", testHash, dir.Hash)
 	}
 }
 
 // Should compose the URL to get the zip archive
 func TestDir_setURL(t *testing.T) {
-	dir := Dir{Path: path, Hash: hash}
+	dir := Dir{Path: testPath, Hash: testHash}
 	dir.setURL()
-	if dir.URL != expectedURL {
-		t.Errorf("Expected URL %s, got %s", expectedURL, dir.URL)
+	if dir.URL != testExpectedURL {
+		t.Errorf("Expected URL %s, got %s", testExpectedURL, dir.URL)
 	}
 }
 
 // Should toggle a Dir structure hash
 func TestDir_toggleHash(t *testing.T) {
-	workingPath, _ := os.Getwd()
-	dirToZip := workingPath + "/utils/"
-	configuration.ZipPath = workingPath + "/"
+	testDelEntry()
+	defer testDelEntry()
+
 	zip := configuration.ZipPath
 
-	dir := Dir{Path: dirToZip}
+	dir := Dir{Path: testDirToZip}
 	_, err := dir.toggleHash()
 	if err != nil {
 		t.Errorf("error %s", err)
@@ -89,7 +70,11 @@ func TestDir_toggleHash(t *testing.T) {
 	if _, err := os.Stat(zip); err == nil {
 		t.Errorf("the zip file has not been deleted. file: %s", zip)
 	}
+	old := configuration.ZipPath
 	configuration.ZipPath = "/invalid/path/"
+	defer func() {
+		configuration.ZipPath = old
+	}()
 	_, err = dir.toggleHash()
 	if err == nil {
 		t.Errorf("the zip file should not have been created")
