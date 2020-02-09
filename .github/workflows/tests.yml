@@ -5,6 +5,11 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+
+    services: 
+      redis: 
+        image: redis
+
     steps:
 
     - name: Set up Go 1.13
