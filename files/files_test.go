@@ -103,7 +103,3 @@ func TestZipDirErrors(t *testing.T) {
 		t.Errorf("an error should have been returned. file: %s", zip)
 	}
 }
-
-// Should return errors when the provided path is incorrect
-func TestRecursiveZipErrors(t *testing.T) {
-}

@@ -9,11 +9,13 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BINARY_NAME=go_send_backend
 
-all: test build
+all: build
 build:
 	$(GOBUILD) -o $(BINARY_NAME) -v
 test:
-	$(GOTEST) -v ./... -coverprofile=coverage.out
+	GOENV=test $(GOTEST) ./... -coverprofile=coverage.out
+testv:
+	GOENV=test $(GOTEST) -v ./... -coverprofile=coverage.out
 coverage:
 	$(GOCOV)
 clean:

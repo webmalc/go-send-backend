@@ -1,6 +1,6 @@
 basePath: '/path/to/directories'
 zipPath: '/path/to/zip/'
-prod: true
+prod: false
 server: 'localhost:8080'
 host: 'http://localhost:8000'
 

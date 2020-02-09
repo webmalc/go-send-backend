@@ -16,5 +16,9 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+    - name: Copy configs
+      run: |
+          cp -n config/config.yml.dist config/test.yml
+
     - name: Test
-      run: make test
+      run: make testv

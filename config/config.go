@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"github.com/spf13/viper"
 	"github.com/webmalc/go-send-backend/utils"
 )
@@ -29,11 +31,23 @@ type Config struct {
 	User     User
 }
 
+// Return the configuration name
+func getConfigName() string {
+	env := os.Getenv("GOENV")
+	if env != "" {
+		return env
+	}
+	return "main"
+}
+
 // GetConfig return the main configuration structure
 func GetConfig() Config {
 	var config Config
-	viper.SetConfigName("main")
+
+	viper.SetConfigName(getConfigName())
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./config")
+	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
 	utils.ProcessFatalError(err)
