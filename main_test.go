@@ -4,14 +4,22 @@ import (
 	"encoding/base64"
 	"os"
 	"testing"
+
+	"github.com/go-redis/redis/v7"
+	"github.com/webmalc/go-send-backend/config"
 )
 
-var testWorkingPath string
-var testPath string
-var testPathEncoded string
-var testHash string
-var testExpectedURL string
-var testDirToZip string
+var (
+	testWorkingPath string
+	testPath        string
+	testPathEncoded string
+	testHash        string
+	testExpectedURL string
+	testDirToZip    string
+	db              *redis.Client
+	configuration   config.Config
+	manager         *DirManager
+)
 
 // Remove the Dir entry from the DB
 func testDelEntry() {
@@ -23,6 +31,13 @@ func testDelEntry() {
 
 func testSetUp() {
 	os.Setenv("GOENV", "test")
+	configuration = config.GetConfig()
+	db = getRedis(&configuration)
+	manager = &DirManager{
+		Db:     db,
+		Logger: getLogger(),
+		Config: &configuration,
+	}
 	testWorkingPath, _ = os.Getwd()
 	testPath = testWorkingPath + "/"
 	testPathEncoded = base64.StdEncoding.EncodeToString([]byte(testPath))

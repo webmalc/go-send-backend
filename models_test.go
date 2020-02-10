@@ -10,7 +10,7 @@ import (
 // Should construct a Dir structure
 func TestDir_constructor(t *testing.T) {
 	dir := Dir{}
-	dir.constructor(testPath)
+	dir.constructor(testPath, manager.Db, manager.Logger, manager.Config)
 
 	assert.Equal(t, dir.Hash, testHash)
 	assert.Equal(t, dir.URL, testExpectedURL)
@@ -18,7 +18,7 @@ func TestDir_constructor(t *testing.T) {
 
 // Should get a hash from the database
 func TestDir_setHashFromDB(t *testing.T) {
-	dir := Dir{Path: testPath}
+	dir := manager.getDir(testPath)
 	dir.setHashFromDB()
 
 	assert.Equal(t, dir.Hash, testHash)
@@ -26,7 +26,8 @@ func TestDir_setHashFromDB(t *testing.T) {
 
 // Should compose the URL to get the zip archive
 func TestDir_setURL(t *testing.T) {
-	dir := Dir{Path: testPath, Hash: testHash}
+	dir := manager.getDir(testPath)
+	dir.Hash = testHash
 	dir.setURL()
 
 	assert.Equal(t, dir.URL, testExpectedURL)
@@ -40,7 +41,7 @@ func TestDir_toggleHash(t *testing.T) {
 
 	zip := configuration.ZipPath
 
-	dir := Dir{Path: testDirToZip}
+	dir := manager.getDir(testDirToZip)
 	err := dir.toggleHash()
 
 	assertT.Nil(err)

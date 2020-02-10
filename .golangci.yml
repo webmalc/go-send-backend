@@ -83,10 +83,10 @@ linters:
     - godox
     - maligned
     - gocognit
+    - gochecknoglobals
+    - gochecknoinits
     # - prealloc
     # - wsl
-    # - gochecknoglobals
-    # - gochecknoinits
 
   # don't enable:
   # - gochecknoglobals
@@ -101,6 +101,8 @@ issues:
     - path: _test\.go
       linters:
         - gomnd
+        - gochecknoglobals
+        - gochecknoinits
 
 # run:
 #   skip-dirs:

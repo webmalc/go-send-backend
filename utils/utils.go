@@ -12,7 +12,7 @@ func ProcessFatalError(err error) {
 	}
 }
 
-var randReader = rand.Read
+var randReader = rand.Read //nolint
 
 // Generates UUID
 func GeneateUUID() string {

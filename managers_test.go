@@ -9,13 +9,13 @@ import (
 // Should return a new Dir structure
 func TestGetDir(t *testing.T) {
 	path := "/test/path"
-	dir := getDir(path)
+	dir := manager.getDir(path)
 	assert.Equal(t, dir.Path, path)
 }
 
 // Should return a slice with Dir structures
 func TestConstructDirsSlice(t *testing.T) {
-	dirs := constructDirsSlice([]string{"one", "two"})
+	dirs := manager.constructDirsSlice([]string{"one", "two"})
 	assert.Len(t, dirs, 2)
 }
 
@@ -23,11 +23,11 @@ func TestConstructDirsSlice(t *testing.T) {
 func TestToggleDirHash(t *testing.T) {
 	testDelEntry()
 	defer testDelEntry()
-	dir, err := toggleDirHash(testDirToZip)
+	dir, err := manager.toggleDirHash(testDirToZip)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, dir.Hash)
 
-	dir, err = toggleDirHash(testDirToZip)
+	dir, err = manager.toggleDirHash(testDirToZip)
 
 	assert.Nil(t, err)
 	assert.Empty(t, dir.Hash)
@@ -37,13 +37,13 @@ func TestToggleDirHash(t *testing.T) {
 	defer func() {
 		configuration.ZipPath = old
 	}()
-	_, err = toggleDirHash(testDirToZip)
+	_, err = manager.toggleDirHash(testDirToZip)
 	assert.NotNil(t, err)
 }
 
 // Should get a Dir structure by hash
 func TestGetDirByHash(t *testing.T) {
-	dir, err := GetDirByHash(testHash, testPathEncoded)
+	dir, err := manager.GetDirByHash(testHash, testPathEncoded)
 	assert.Nil(t, err)
 	assert.Equal(t, dir.Hash, testHash)
 	assert.Equal(t, dir.URL, testExpectedURL)
@@ -51,23 +51,23 @@ func TestGetDirByHash(t *testing.T) {
 
 // Should raise errors when the invalid arguments provided
 func TestGetDirByHashErrors(t *testing.T) {
-	_, err := GetDirByHash(testHash, "invalid_base")
+	_, err := manager.GetDirByHash(testHash, "invalid_base")
 	assert.NotNil(t, err)
 
-	_, err = GetDirByHash("invalid_hash", testPathEncoded)
+	_, err = manager.GetDirByHash("invalid_hash", testPathEncoded)
 
 	assert.NotNil(t, err)
 	_, _ = db.Del(testPath).Result()
 	defer func() {
 		_, _ = db.Set(testPath, testHash, 0).Result()
 	}()
-	_, err = GetDirByHash(testHash, testPathEncoded)
+	_, err = manager.GetDirByHash(testHash, testPathEncoded)
 
 	assert.NotNil(t, err)
 }
 
 func TestGenerateZipErrors(t *testing.T) {
 	dir := Dir{Hash: "", Path: ""}
-	_, err := generateZip(&dir)
+	_, err := dir.generateZip()
 	assert.NotNil(t, err)
 }

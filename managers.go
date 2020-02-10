@@ -3,29 +3,37 @@ package main
 import (
 	"encoding/base64"
 	"errors"
+	"log"
 
-	"github.com/webmalc/go-send-backend/files"
+	"github.com/go-redis/redis/v7"
+	"github.com/webmalc/go-send-backend/config"
 )
 
+type DirManager struct {
+	Db     *redis.Client
+	Logger *log.Logger
+	Config *config.Config
+}
+
 // Returns a new constructed Dir object
-func getDir(dir string) Dir {
+func (manager *DirManager) getDir(dir string) Dir {
 	dirStruct := Dir{}
-	dirStruct.constructor(dir)
+	dirStruct.constructor(dir, manager.Db, manager.Logger, manager.Config)
 	return dirStruct
 }
 
 // Constructs the Dir slice from paths
-func constructDirsSlice(dirs []string) []Dir {
+func (manager *DirManager) constructDirsSlice(dirs []string) []Dir {
 	var results []Dir
 	for _, dir := range dirs {
-		results = append(results, getDir(dir))
+		results = append(results, manager.getDir(dir))
 	}
 	return results
 }
 
 // Toggles hash for the directory
-func toggleDirHash(dir string) (Dir, error) {
-	dirStruct := getDir(dir)
+func (manager *DirManager) toggleDirHash(dir string) (Dir, error) {
+	dirStruct := manager.getDir(dir)
 	err := dirStruct.toggleHash()
 	if err != nil {
 		return dirStruct, err
@@ -34,14 +42,14 @@ func toggleDirHash(dir string) (Dir, error) {
 }
 
 // Gets a Dir structure by the hash
-func GetDirByHash(hash, base string) (Dir, error) {
-	dir := Dir{}
+func (manager *DirManager) GetDirByHash(hash, base string) (Dir, error) {
 	decoded, err := base64.StdEncoding.DecodeString(base)
 	if err != nil {
-		return dir, err
+		return Dir{}, err
 	}
 	key := string(decoded)
-	dbHash, err := db.Get(key).Result()
+	dir := manager.getDir(key)
+	dbHash, err := manager.Db.Get(key).Result()
 	if err != nil {
 		return dir, err
 	}
@@ -53,12 +61,4 @@ func GetDirByHash(hash, base string) (Dir, error) {
 	dir.setURL()
 
 	return dir, nil
-}
-
-// Generates a zip archive for the Dir object
-func generateZip(dir *Dir) (string, error) {
-	if dir.Path != "" && dir.Hash != "" {
-		return files.ZipDir(dir.Path, configuration.ZipPath, dir.Hash)
-	}
-	return "", errors.New("unable to generate a zip archive")
 }
