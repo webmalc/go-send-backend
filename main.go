@@ -20,10 +20,9 @@ func init() {
 
 	_, err := db.Ping().Result()
 	utils.ProcessFatalError(err)
-
 }
 
 // Run the script
 func main() {
-	runServer(&configuration)
+	runServer()
 }

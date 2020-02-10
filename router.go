@@ -6,7 +6,6 @@ import (
 
 // Defines the protected routes
 func setProtectedRoutes(router *gin.RouterGroup) *gin.RouterGroup {
-
 	router.GET("/", browseHandler)
 	router.GET("/share", shareHandler)
 	return router
@@ -14,7 +13,6 @@ func setProtectedRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 
 // Defines the public routes
 func setPublicRoutes(router *gin.RouterGroup) *gin.RouterGroup {
-
 	router.GET("/get/:hash/:base", getDirectoryHandler)
 	return router
 }

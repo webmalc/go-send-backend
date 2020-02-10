@@ -36,35 +36,35 @@ func TestDir_setURL(t *testing.T) {
 func TestDir_toggleHash(t *testing.T) {
 	testDelEntry()
 	defer testDelEntry()
-	assert := assert.New(t)
+	assertT := assert.New(t)
 
 	zip := configuration.ZipPath
 
 	dir := Dir{Path: testDirToZip}
-	_, err := dir.toggleHash()
+	err := dir.toggleHash()
 
-	assert.Nil(err)
-	assert.NotEmpty(dir.Hash)
-	assert.NotEmpty(dir.URL)
+	assertT.Nil(err)
+	assertT.NotEmpty(dir.Hash)
+	assertT.NotEmpty(dir.URL)
 
 	zip += dir.Hash + ".zip"
 	_, err = os.Stat(zip)
-	assert.Nil(err)
+	assertT.Nil(err)
 
-	_, err = dir.toggleHash()
+	err = dir.toggleHash()
 
-	assert.Nil(err)
-	assert.Empty(dir.Hash)
-	assert.Empty(dir.URL)
+	assertT.Nil(err)
+	assertT.Empty(dir.Hash)
+	assertT.Empty(dir.URL)
 
 	_, err = os.Stat(zip)
-	assert.NotNil(err)
+	assertT.NotNil(err)
 
 	old := configuration.ZipPath
 	configuration.ZipPath = "/invalid/path/"
 	defer func() {
 		configuration.ZipPath = old
 	}()
-	_, err = dir.toggleHash()
-	assert.NotNil(err)
+	err = dir.toggleHash()
+	assertT.NotNil(err)
 }

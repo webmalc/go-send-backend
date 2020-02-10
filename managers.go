@@ -26,7 +26,7 @@ func constructDirsSlice(dirs []string) []Dir {
 // Toggles hash for the directory
 func toggleDirHash(dir string) (Dir, error) {
 	dirStruct := getDir(dir)
-	_, err := dirStruct.toggleHash()
+	err := dirStruct.toggleHash()
 	if err != nil {
 		return dirStruct, err
 	}
@@ -34,7 +34,7 @@ func toggleDirHash(dir string) (Dir, error) {
 }
 
 // Gets a Dir structure by the hash
-func GetDirByHash(hash string, base string) (Dir, error) {
+func GetDirByHash(hash, base string) (Dir, error) {
 	dir := Dir{}
 	decoded, err := base64.StdEncoding.DecodeString(base)
 	if err != nil {

@@ -35,7 +35,7 @@ func getRequest(url string) *http.Request {
 
 // Should return the 401 code for the unauthorized request
 func TestAuth(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 
 	request := getRequest("/admin/")
 	writer := httptest.NewRecorder()
@@ -43,7 +43,7 @@ func TestAuth(t *testing.T) {
 
 	assert.Equal(t, writer.Code, 401)
 
-	router = setupRouter(&configuration)
+	router = setupRouter()
 	request.SetBasicAuth("invalid", "invalid")
 	writer = httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
@@ -53,7 +53,7 @@ func TestAuth(t *testing.T) {
 
 // Should return the JSON with directories
 func TestBrowseHandler(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 
 	request := getAdminRequest("/admin/")
 	writer := httptest.NewRecorder()
@@ -71,7 +71,7 @@ func TestBrowseHandler(t *testing.T) {
 
 // Should return an error with the invalid path
 func TestBrowseHandlerError(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 
 	request := getAdminRequest("/admin/")
 	q := request.URL.Query()
@@ -86,7 +86,7 @@ func TestBrowseHandlerError(t *testing.T) {
 
 // Should return the JSON with Dir structure
 func TestShareHandler(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 	configuration.BasePath = testWorkingPath
 
 	request := getAdminRequest("/admin/share")
@@ -105,12 +105,12 @@ func TestShareHandler(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotEmpty(t, dir.URL)
 
-	_, _ = dir.toggleHash()
+	_ = dir.toggleHash()
 }
 
 // Should return an error with the invalid path
 func TestShareHandlerErrors(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 
 	request := getAdminRequest("/admin/share")
 	q := request.URL.Query()
@@ -132,7 +132,7 @@ func TestGetDirectoryHandler(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	router := setupRouter(&configuration)
+	router := setupRouter()
 
 	url := fmt.Sprintf("public/get/%s/%s", testHash, PathEncoded)
 	request := getRequest(url)
@@ -144,13 +144,12 @@ func TestGetDirectoryHandler(t *testing.T) {
 	assert.Equal(t, writer.Header().Get("Content-Description"), "File Transfer")
 
 	dir := Dir{Path: path, Hash: testHash}
-	_, _ = dir.removeHash()
-
+	_ = dir.removeHash()
 }
 
 // Should return an error with the invalid path
 func TestGetDirectoryHandlerErrors(t *testing.T) {
-	router := setupRouter(&configuration)
+	router := setupRouter()
 	request := getRequest("public/get/:hash/:base")
 
 	writer := httptest.NewRecorder()

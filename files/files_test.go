@@ -44,11 +44,11 @@ func TestConstructPath(t *testing.T) {
 func TestGetDirectories(t *testing.T) {
 	dirs, err := GetDirectories(baseDir, "")
 
-	assert := assert.New(t)
-	assert.Nil(err)
-	assert.Contains(dirs, baseDir+"config/")
-	assert.Contains(dirs, baseDir+"files/")
-	assert.Contains(dirs, baseDir+"utils/")
+	assertT := assert.New(t)
+	assertT.Nil(err)
+	assertT.Contains(dirs, baseDir+"config/")
+	assertT.Contains(dirs, baseDir+"files/")
+	assertT.Contains(dirs, baseDir+"utils/")
 }
 
 // Should return errors when the provided path is incorrect
@@ -63,18 +63,17 @@ func TestGetDirectoriesError(t *testing.T) {
 func TestZipDirAndDelete(t *testing.T) {
 	zip, err := ZipDir(baseDir+"utils/", baseDir, "test")
 
-	assert := assert.New(t)
-	assert.Nil(err)
-	assert.Equal(zip, baseDir+"test.zip")
+	assertT := assert.New(t)
+	assertT.Nil(err)
+	assertT.Equal(zip, baseDir+"test.zip")
 
 	zip, _ = ZipDir(baseDir+"utils/", baseDir, "test")
 
-	assert.Equal(zip, baseDir+"test.zip")
+	assertT.Equal(zip, baseDir+"test.zip")
 	_ = DeleteZip(baseDir, "test")
 
 	_, err = os.Stat(zip)
-	assert.NotNil(err)
-
+	assertT.NotNil(err)
 }
 
 // Should return errors when the provided path is incorrect

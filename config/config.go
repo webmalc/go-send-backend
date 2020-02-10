@@ -56,5 +56,4 @@ func GetConfig() Config {
 	utils.ProcessFatalError(err)
 
 	return config
-
 }

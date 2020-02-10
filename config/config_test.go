@@ -13,27 +13,26 @@ func init() {
 
 // Should return the config name based on the environment variable GOENV
 func TestGetConfigName(t *testing.T) {
-	assert := assert.New(t)
-	assert.Equal(getConfigName(), "test")
+	assertT := assert.New(t)
+	assertT.Equal(getConfigName(), "test")
 
 	os.Setenv("GOENV", "abc")
 	defer func() {
 		os.Setenv("GOENV", "test")
 	}()
-	assert.Equal(getConfigName(), "abc")
+	assertT.Equal(getConfigName(), "abc")
 
 	os.Setenv("GOENV", "")
-	assert.Equal(getConfigName(), "main")
-
+	assertT.Equal(getConfigName(), "main")
 }
 
 // Should return a configuration object
 func TestGetConfig(t *testing.T) {
-	assert := assert.New(t)
+	assertT := assert.New(t)
 	config := GetConfig()
 
-	assert.Equal(config.BasePath, "/path/to/directories")
-	assert.Equal(config.Database.Db, 9)
-	assert.Equal(config.User.Username, "user")
-	assert.Equal(config.User.Password, "password")
+	assertT.Equal(config.BasePath, "/path/to/directories")
+	assertT.Equal(config.Database.Db, 9)
+	assertT.Equal(config.User.Username, "user")
+	assertT.Equal(config.User.Password, "password")
 }

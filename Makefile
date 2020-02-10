@@ -30,17 +30,7 @@ clean:
 	rm -f $(BINARY_NAME)
 
 lint: 
-	gometalinter --vendor --disable-all \
-		--enable=ineffassign \
-		--enable=staticcheck \
-		--enable=gofmt \
-		--enable=goimports \
-		--enable=misspell \
-		--enable=errcheck \
-		--enable=vet \
-		--enable=vetshadow \
-		--deadline=10m \
-		./...
+	golangci-lint run ./...
 run:
 	$(GORUN)
 
