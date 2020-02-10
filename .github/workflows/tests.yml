@@ -19,9 +19,20 @@ jobs:
         go-version: 1.13
       id: go
 
+    - name: Debug
+      run: |
+        echo ${HOME}
+        echo ${GITHUB_WORKSPACE}
+        echo ${GOPATH}
+        echo ${GOROOT}
+      env:
+        GOPATH: /home/runner/work/webmalc/go
+
     - name: Install environments
       run: |
           GO111MODULE=on CGO_ENABLED=0 go get -v -trimpath -ldflags '-s -w' github.com/golangci/golangci-lint/cmd/golangci-lint
+      env:
+        GOPATH: /home/runner/work/webmalc/go
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -32,3 +43,5 @@ jobs:
 
     - name: Test
       run: make testl
+      env:
+        GOPATH: /home/runner/work/webmalc/go
