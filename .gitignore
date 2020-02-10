@@ -16,3 +16,6 @@
 
 # Go-send
 config/*.yml
+
+logs/*
+!logs/.gitkeep

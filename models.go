@@ -47,7 +47,15 @@ func (dir *Dir) removeHash() error {
 	if err != nil {
 		return err
 	}
-	_ = files.DeleteZip(configuration.ZipPath, dir.Hash)
+	logger.Printf(
+		"[INFO] Deleting the zip %s%s.zip",
+		configuration.ZipPath, dir.Hash)
+	err = files.DeleteZip(configuration.ZipPath, dir.Hash)
+	if err != nil {
+		logger.Printf(
+			"[ERROR] Failed to delete the zip %s%s.zip",
+			configuration.ZipPath, dir.Hash)
+	}
 	dir.Hash = ""
 	return nil
 }
@@ -61,7 +69,13 @@ func (dir *Dir) setHash() error {
 	}
 	dir.Hash = hash
 	_, err = generateZip(dir)
+	logger.Printf(
+		"[INFO] Generating a zip for the directory %s in %s%s.zip",
+		dir.Path, configuration.ZipPath, dir.Hash)
 	if err != nil {
+		logger.Printf(
+			"[ERROR] Failed to generate a zip for the directory %s in %s%s.zip",
+			dir.Path, configuration.ZipPath, dir.Hash)
 		return err
 	}
 	return nil

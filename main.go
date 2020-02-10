@@ -1,13 +1,18 @@
 package main
 
 import (
+	"log"
+
 	"github.com/go-redis/redis/v7"
 	"github.com/webmalc/go-send-backend/config"
 	"github.com/webmalc/go-send-backend/utils"
 )
 
-var configuration config.Config
-var db *redis.Client
+var (
+	configuration config.Config
+	db            *redis.Client
+	logger        *log.Logger
+)
 
 // Initializes the main variables
 func init() {
