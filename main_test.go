@@ -37,16 +37,12 @@ func testSetUp() {
 	}
 }
 
-func testTearDown() {
-	_, err := db.Del(testPath).Result()
-	if err != nil {
-		panic(err)
-	}
-}
-
 // Setup the package
 func TestMain(m *testing.M) {
 	testSetUp()
 	os.Exit(m.Run())
-	testTearDown()
+	_, err := db.Del(testPath).Result()
+	if err != nil {
+		panic(err)
+	}
 }

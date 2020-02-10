@@ -27,9 +27,9 @@ func GeneateUUID() string {
 }
 
 // Generates a random string
-func GenerateRandomString(lenght int) string {
+func GenerateRandomString(length int) string {
 	result := ""
-	for i := 0; i < lenght; i++ {
+	for i := 0; i < length; i++ {
 		result += GeneateUUID()
 	}
 	return result

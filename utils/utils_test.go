@@ -3,6 +3,8 @@ package utils
 import (
 	"errors"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // Should generate a random UUID
@@ -11,12 +13,10 @@ func TestGeneateUUID(t *testing.T) {
 	uuid2 := GeneateUUID()
 	uuidLen1 := len(uuid1)
 	uuidLen2 := len(uuid2)
-	if uuidLen1 != 36 || uuidLen2 != uuidLen1 {
-		t.Errorf("invalid UUIDs length: %d, %d", uuidLen2, uuidLen1)
-	}
-	if uuid1 == uuid2 {
-		t.Errorf("equal UUIDs: %s, %s", uuid1, uuid1)
-	}
+
+	assert.Equal(t, uuidLen1, 36)
+	assert.Equal(t, uuidLen1, uuidLen2)
+	assert.NotEqual(t, uuid1, uuid2)
 }
 
 // Should panic when randReader failed
@@ -41,15 +41,10 @@ func TestGenerateRandomString(t *testing.T) {
 	strLen1 := len(str1)
 	strLen2 := len(str2)
 
-	if strLen1 != 36*3 || strLen1 != strLen2 {
-		t.Errorf("invalid strings length: %d, %d", strLen1, strLen2)
-	}
-	if str1 == str2 {
-		t.Errorf("equal strings: %s, %s", str1, str2)
-	}
-	if strLenLong := len(GenerateRandomString(5)); strLenLong != 36*5 {
-		t.Errorf("invalid strings length: %d", strLenLong)
-	}
+	assert.Equal(t, strLen1, 36*3)
+	assert.Equal(t, strLen1, strLen2)
+	assert.NotEqual(t, str1, str2)
+	assert.Equal(t, len(GenerateRandomString(5)), 36*5)
 }
 
 // Should panic if the provided error is not nil

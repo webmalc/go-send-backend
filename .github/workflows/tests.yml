@@ -27,4 +27,4 @@ jobs:
           cp -n config/config.yml.dist config/test.yml
 
     - name: Test
-      run: make testv
+      run: make testl

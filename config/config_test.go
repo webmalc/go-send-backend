@@ -3,6 +3,8 @@ package config
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {
@@ -11,43 +13,27 @@ func init() {
 
 // Should return the config name based on the environment variable GOENV
 func TestGetConfigName(t *testing.T) {
-	if name := getConfigName(); name != "test" {
-		t.Errorf("name should have been 'test'. Got: %s", name)
-	}
+	assert := assert.New(t)
+	assert.Equal(getConfigName(), "test")
+
 	os.Setenv("GOENV", "abc")
 	defer func() {
 		os.Setenv("GOENV", "test")
 	}()
-
-	if name := getConfigName(); name != "abc" {
-		t.Errorf("name should have been 'abc'. Got: %s", name)
-	}
+	assert.Equal(getConfigName(), "abc")
 
 	os.Setenv("GOENV", "")
-	if name := getConfigName(); name != "main" {
-		t.Errorf("name should have been 'main'. Got: %s", name)
-	}
+	assert.Equal(getConfigName(), "main")
 
 }
 
 // Should return a configuration object
 func TestGetConfig(t *testing.T) {
+	assert := assert.New(t)
 	config := GetConfig()
-	basePath := "/path/to/directories"
-	db := 9
-	user := "user"
-	password := "password"
 
-	if config.BasePath != basePath {
-		t.Errorf("Value should be %s", basePath)
-	}
-	if config.Database.Db != db {
-		t.Errorf("Value should be %d", db)
-	}
-	if config.User.Username != user {
-		t.Errorf("Value should be %s", user)
-	}
-	if config.User.Password != password {
-		t.Errorf("Value should be %s", password)
-	}
+	assert.Equal(config.BasePath, "/path/to/directories")
+	assert.Equal(config.Database.Db, 9)
+	assert.Equal(config.User.Username, "user")
+	assert.Equal(config.User.Password, "password")
 }

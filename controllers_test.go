@@ -8,6 +8,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {
@@ -39,18 +41,14 @@ func TestAuth(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 401 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 401)
 
 	router = setupRouter(&configuration)
 	request.SetBasicAuth("invalid", "invalid")
 	writer = httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 401 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 401)
 }
 
 // Should return the JSON with directories
@@ -61,19 +59,14 @@ func TestBrowseHandler(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 200 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 200)
+
 	var data []Dir
-	if err := json.Unmarshal(writer.Body.Bytes(), &data); err != nil {
-		t.Errorf("Got the invalid JSON response %s", writer.Body.String())
-	}
-	for _, dir := range data {
-		if dir.Path == "config/" {
-			return
-		}
-	}
-	t.Errorf("the config directory has not found, got %s", data)
+	err := json.Unmarshal(writer.Body.Bytes(), &data)
+
+	assert.Nil(t, err)
+	assert.Contains(t, data, Dir{Path: "config/"})
+	assert.Contains(t, data, Dir{Path: "utils/"})
 }
 
 // Should return an error with the invalid path
@@ -88,9 +81,7 @@ func TestBrowseHandlerError(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 400 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 400)
 }
 
 // Should return the JSON with Dir structure
@@ -106,16 +97,14 @@ func TestShareHandler(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 200 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 200)
+
 	var dir Dir
-	if err := json.Unmarshal(writer.Body.Bytes(), &dir); err != nil {
-		t.Errorf("Got the invalid JSON response %s", writer.Body.String())
-	}
-	if dir.URL == "" {
-		t.Errorf("Unable to generate the Dir URL, got %s", dir.URL)
-	}
+	err := json.Unmarshal(writer.Body.Bytes(), &dir)
+
+	assert.Nil(t, err)
+	assert.NotEmpty(t, dir.URL)
+
 	_, _ = dir.toggleHash()
 }
 
@@ -131,9 +120,7 @@ func TestShareHandlerErrors(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 400 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 400)
 }
 
 // Should return a response with the zip archive
@@ -153,12 +140,9 @@ func TestGetDirectoryHandler(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 200 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
-	if writer.Header().Get("Content-Description") != "File Transfer" {
-		t.Errorf("Got the invalid headers")
-	}
+	assert.Equal(t, writer.Code, 200)
+	assert.Equal(t, writer.Header().Get("Content-Description"), "File Transfer")
+
 	dir := Dir{Path: path, Hash: testHash}
 	_, _ = dir.removeHash()
 
@@ -172,7 +156,5 @@ func TestGetDirectoryHandlerErrors(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	if writer.Code != 400 {
-		t.Errorf("Got the invalid response code %d", writer.Code)
-	}
+	assert.Equal(t, writer.Code, 400)
 }
