@@ -8,6 +8,20 @@ import (
 	"github.com/webmalc/go-send-backend/files"
 )
 
+// Main controller
+type Controller struct {
+	Manager *DirManager
+	Config  *config.Config
+}
+
+// Returns the controller object
+func NewController(manager *DirManager, conf *config.Config) *Controller {
+	return &Controller{
+		Manager: manager,
+		Config:  conf,
+	}
+}
+
 // Checks the provided error and aborts a controller execution
 func checkErrorAndAbort(err error, context *gin.Context) *gin.Error {
 	if err != nil {
@@ -17,27 +31,27 @@ func checkErrorAndAbort(err error, context *gin.Context) *gin.Error {
 }
 
 // browseHandler is a handler for listing directories
-func browseHandler(manager *DirManager, conf *config.Config) gin.HandlerFunc {
+func (contr *Controller) browseHandler() gin.HandlerFunc {
 	var browseHandler gin.HandlerFunc = func(context *gin.Context) {
 		path := context.Query("path")
-		dirs, err := files.GetDirectories(conf.BasePath, path)
+		dirs, err := files.GetDirectories(contr.Config.BasePath, path)
 		if checkErrorAndAbort(err, context) != nil {
 			return
 		}
-		context.JSON(http.StatusOK, manager.constructDirsSlice(dirs))
+		context.JSON(http.StatusOK, contr.Manager.constructDirsSlice(dirs))
 	}
 	return browseHandler
 }
 
 // shareHandler is a handler for generating hash for the directory
-func shareHandler(manager *DirManager, conf *config.Config) gin.HandlerFunc {
+func (contr *Controller) shareHandler() gin.HandlerFunc {
 	var shareHandler gin.HandlerFunc = func(context *gin.Context) {
 		path := context.Query("path")
-		dir, err := files.ConstructPath(conf.BasePath, path)
+		dir, err := files.ConstructPath(contr.Config.BasePath, path)
 		if checkErrorAndAbort(err, context) != nil {
 			return
 		}
-		dirStruct, err := manager.toggleDirHash(dir)
+		dirStruct, err := contr.Manager.toggleDirHash(dir)
 		if checkErrorAndAbort(err, context) != nil {
 			return
 		}
@@ -47,11 +61,11 @@ func shareHandler(manager *DirManager, conf *config.Config) gin.HandlerFunc {
 }
 
 // getDirectoryHandler is a handler for getting directories
-func getDirectoryHandler(manager *DirManager) gin.HandlerFunc {
+func (contr *Controller) getDirectoryHandler() gin.HandlerFunc {
 	var getDirectoryHandler gin.HandlerFunc = func(context *gin.Context) {
 		hash := context.Param("hash")
 		base := context.Param("base")
-		dir, err := manager.GetDirByHash(hash, base)
+		dir, err := contr.Manager.GetDirByHash(hash, base)
 		if checkErrorAndAbort(err, context) != nil {
 			return
 		}

@@ -18,8 +18,9 @@ func setupRouter(manager *DirManager, conf *config.Config) *gin.Engine {
 	}))
 	publicRouter := router.Group("/public")
 
-	setProtectedRoutes(protectedRouter, manager, conf)
-	setPublicRoutes(publicRouter, manager)
+	controller := NewController(manager, conf)
+	setProtectedRoutes(protectedRouter, controller)
+	setPublicRoutes(publicRouter, controller)
 
 	return router
 }

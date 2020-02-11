@@ -39,10 +39,10 @@ func getLogger() *log.Logger {
 // Run the script
 func main() {
 	configuration := config.GetConfig()
-	manager := DirManager{
-		Db:     getRedis(&configuration),
-		Logger: getLogger(),
-		Config: &configuration,
-	}
-	runServer(&manager, &configuration)
+	manager := NewManager(
+		getRedis(&configuration),
+		getLogger(),
+		&configuration,
+	)
+	runServer(manager, &configuration)
 }

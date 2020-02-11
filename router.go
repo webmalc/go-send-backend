@@ -2,25 +2,23 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/webmalc/go-send-backend/config"
 )
 
 // Defines the protected routes
 func setProtectedRoutes(
 	router *gin.RouterGroup,
-	manager *DirManager,
-	conf *config.Config,
+	controller *Controller,
 ) *gin.RouterGroup {
-	router.GET("/", browseHandler(manager, conf))
-	router.GET("/share", shareHandler(manager, conf))
+	router.GET("/", controller.browseHandler())
+	router.GET("/share", controller.shareHandler())
 	return router
 }
 
 // Defines the public routes
 func setPublicRoutes(
 	router *gin.RouterGroup,
-	manager *DirManager,
+	controller *Controller,
 ) *gin.RouterGroup {
-	router.GET("/get/:hash/:base", getDirectoryHandler(manager))
+	router.GET("/get/:hash/:base", controller.getDirectoryHandler())
 	return router
 }
