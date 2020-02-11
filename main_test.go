@@ -31,11 +31,11 @@ func testDelEntry() {
 
 func testSetUp() {
 	os.Setenv("GOENV", "test")
-	configuration = config.GetConfig()
-	db = getRedis(&configuration)
+	configuration = config.NewConfig()
+	db = NewRedis(&configuration)
 	manager = &DirManager{
 		Db:     db,
-		Logger: getLogger(),
+		Logger: NewLogger(),
 		Config: &configuration,
 	}
 	testWorkingPath, _ = os.Getwd()

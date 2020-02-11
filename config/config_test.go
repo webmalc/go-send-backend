@@ -27,9 +27,9 @@ func TestGetConfigName(t *testing.T) {
 }
 
 // Should return a configuration object
-func TestGetConfig(t *testing.T) {
+func TestNewConfig(t *testing.T) {
 	assertT := assert.New(t)
-	config := GetConfig()
+	config := NewConfig()
 
 	assertT.Equal(config.BasePath, "/path/to/directories")
 	assertT.Equal(config.Database.Db, 9)

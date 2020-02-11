@@ -14,14 +14,6 @@ type Controller struct {
 	Config  *config.Config
 }
 
-// Returns the controller object
-func NewController(manager *DirManager, conf *config.Config) *Controller {
-	return &Controller{
-		Manager: manager,
-		Config:  conf,
-	}
-}
-
 // Checks the provided error and aborts a controller execution
 func checkErrorAndAbort(err error, context *gin.Context) *gin.Error {
 	if err != nil {

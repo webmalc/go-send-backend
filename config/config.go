@@ -41,7 +41,7 @@ func getConfigName() string {
 }
 
 // GetConfig return the main configuration structure
-func GetConfig() Config {
+func NewConfig() Config {
 	var config Config
 
 	viper.SetConfigName(getConfigName())

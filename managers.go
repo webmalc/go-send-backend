@@ -15,19 +15,6 @@ type DirManager struct {
 	Config *config.Config
 }
 
-// Returns the controller object
-func NewManager(
-	db *redis.Client,
-	logger *log.Logger,
-	conf *config.Config,
-) *DirManager {
-	return &DirManager{
-		Db:     db,
-		Logger: logger,
-		Config: conf,
-	}
-}
-
 // Returns a new constructed Dir object
 func (manager *DirManager) getDir(dir string) Dir {
 	dirStruct := Dir{}
