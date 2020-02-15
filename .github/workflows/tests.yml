@@ -21,6 +21,7 @@ jobs:
 
     - name: Install environments
       run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.3
           sudo cp bin/golangci-lint /usr/local/bin/golangci-lint
           go get -u github.com/jokeyrhyme/go-coverage-threshold/cmd/go-coverage-threshold
