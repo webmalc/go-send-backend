@@ -34,4 +34,6 @@ jobs:
           cp -n config/config.yml.dist config/test.yml
 
     - name: Test
-      run: make testall
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        make testall
