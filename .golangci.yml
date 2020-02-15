@@ -88,13 +88,6 @@ linters:
     # - prealloc
     # - wsl
 
-  # don't enable:
-  # - gochecknoglobals
-  # - gocognit
-  # - godox
-  # - maligned
-  # - prealloc
-
 issues:
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:

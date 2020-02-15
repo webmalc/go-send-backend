@@ -1,18 +1,28 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/webmalc/go-send-backend/config"
 	"github.com/webmalc/go-send-backend/utils"
 )
+
+// Returns the CORS configuration
+func getCors() gin.HandlerFunc {
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AddAllowHeaders("Authorization")
+
+	return cors.New(corsConfig)
+}
 
 // Setups the router
 func setupRouter(manager *DirManager, conf *config.Config) *gin.Engine {
 	if conf.Prod {
 		gin.SetMode(gin.ReleaseMode)
 	}
-
 	router := gin.Default()
+	router.Use(getCors())
 	protectedRouter := router.Group("/admin", gin.BasicAuth(gin.Accounts{
 		conf.User.Username: conf.User.Password,
 	}))

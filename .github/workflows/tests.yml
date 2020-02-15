@@ -23,6 +23,7 @@ jobs:
       run: |
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.23.3
           sudo cp bin/golangci-lint /usr/local/bin/golangci-lint
+          go get -u github.com/jokeyrhyme/go-coverage-threshold/cmd/go-coverage-threshold
 
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
@@ -32,4 +33,4 @@ jobs:
           cp -n config/config.yml.dist config/test.yml
 
     - name: Test
-      run: make testl
+      run: make testall

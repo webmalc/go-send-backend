@@ -20,10 +20,15 @@ test:
 testv:
 	GOENV=test $(GOTEST) -v ./... -coverprofile=coverage.out
 
-testl: testv lint
-
 coverage:
 	$(GOCOV)
+
+threshold:  
+	go-coverage-threshold -t 90
+
+testl: testv lint
+
+testall: test lint threshold
 
 clean:
 	$(GOCLEAN)
