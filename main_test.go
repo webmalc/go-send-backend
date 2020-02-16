@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/base64"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/go-redis/redis/v7"
@@ -39,6 +40,7 @@ func testSetUp() {
 		Config: &configuration,
 	}
 	testWorkingPath, _ = os.Getwd()
+	testWorkingPath, _ = filepath.Abs(testWorkingPath)
 	testPath = testWorkingPath + "/"
 	testPathEncoded = base64.StdEncoding.EncodeToString([]byte(testPath))
 	testHash = "testhash"
@@ -46,6 +48,7 @@ func testSetUp() {
 	testExpectedURL += testHash + "/" + testPathEncoded
 	testDirToZip = testWorkingPath + "/utils/"
 	configuration.ZipPath = testWorkingPath + "/"
+	configuration.BasePath = testWorkingPath + "/"
 	err := db.Set(testPath, testHash, 0).Err()
 	if err != nil {
 		panic(err)

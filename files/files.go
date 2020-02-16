@@ -32,6 +32,9 @@ func ConstructPath(baseDir, dest string) (string, error) {
 	if dest == "" {
 		dest = baseDir
 	}
+	if []rune(dest)[0] != '/' {
+		dest = path.Join(baseDir, dest) + "/"
+	}
 	dest = filepath.Dir(dest)
 
 	if !isSubPath(baseDir, dest) {

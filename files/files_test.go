@@ -38,6 +38,10 @@ func TestConstructPath(t *testing.T) {
 
 	_, err = ConstructPath(etc, invalid)
 	assert.NotNil(t, err)
+
+	_, err = ConstructPath(etc, "kernel")
+	assert.Nil(t, err)
+	assert.Equal(t, r, "/etc/kernel/")
 }
 
 // Should return a slice of directories for the given destination path

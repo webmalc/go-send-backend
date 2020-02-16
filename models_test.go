@@ -33,6 +33,13 @@ func TestDir_setURL(t *testing.T) {
 	assert.Equal(t, dir.URL, testExpectedURL)
 }
 
+// Should return a relative path
+func TestDir_getRelativePath(t *testing.T) {
+	utils := "utils/"
+	dir := manager.getDir(testPath + utils)
+	assert.Equal(t, utils, dir.getRelativePath())
+}
+
 // Should toggle a Dir structure hash
 func TestDir_toggleHash(t *testing.T) {
 	testDelEntry()

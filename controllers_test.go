@@ -57,16 +57,26 @@ func TestBrowseHandler(t *testing.T) {
 	router := setupRouter(manager, &configuration)
 	request := getAdminRequest("/admin/")
 	writer := httptest.NewRecorder()
+	type JSON struct {
+		Dir
+		RelativePath string `json:"relative_path" binding:"required"`
+	}
+	var data []JSON
+	expectedConfig := JSON{
+		Dir{Path: testWorkingPath + "/config/"}, "config/",
+	}
+	exptectedUtils := JSON{
+		Dir{Path: testWorkingPath + "/utils/"}, "utils/",
+	}
+
 	router.ServeHTTP(writer, request)
 
 	assert.Equal(t, 200, writer.Code)
-
-	var data []Dir
 	err := json.Unmarshal(writer.Body.Bytes(), &data)
 
 	assert.Nil(t, err)
-	assert.Contains(t, data, Dir{Path: testWorkingPath + "/config/"})
-	assert.Contains(t, data, Dir{Path: testWorkingPath + "/utils/"})
+	assert.Contains(t, data, exptectedUtils)
+	assert.Contains(t, data, expectedConfig)
 }
 
 // Should return an error with the invalid path

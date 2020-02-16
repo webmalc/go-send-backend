@@ -5,6 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"path/filepath"
+
+	"encoding/json"
 
 	"github.com/go-redis/redis/v7"
 	"github.com/webmalc/go-send-backend/config"
@@ -38,11 +41,30 @@ func (dir *Dir) constructor(
 	dir.setHashFromDB()
 	dir.setURL()
 }
+func (dir Dir) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Path         string `json:"path" binding:"required"`
+		RelativePath string `json:"relative_path" binding:"required"`
+		Hash         string `json:"hash" binding:"required"`
+		URL          string `json:"url" binding:"required"`
+	}{
+		Path:         dir.Path,
+		RelativePath: dir.getRelativePath(),
+		Hash:         dir.Hash,
+		URL:          dir.URL,
+	})
+}
 
 // Sets the Dir hash from the database
 func (dir *Dir) setHashFromDB() {
 	hash, _ := dir.Db.Get(dir.Path).Result()
 	dir.Hash = hash
+}
+
+// Returns the relative path
+func (dir *Dir) getRelativePath() string {
+	rel, _ := filepath.Rel(dir.Config.BasePath, dir.Path)
+	return rel + "/"
 }
 
 // Sets URL for the Dir
