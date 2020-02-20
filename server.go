@@ -23,6 +23,7 @@ func setupRouter(manager *DirManager, conf *config.Config) *gin.Engine {
 	}
 	router := gin.Default()
 	router.Use(getCors())
+	router.LoadHTMLGlob("templates/*")
 	protectedRouter := router.Group("/admin", gin.BasicAuth(gin.Accounts{
 		conf.User.Username: conf.User.Password,
 	}))

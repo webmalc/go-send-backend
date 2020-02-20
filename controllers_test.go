@@ -168,5 +168,6 @@ func TestGetDirectoryHandlerErrors(t *testing.T) {
 	writer := httptest.NewRecorder()
 	router.ServeHTTP(writer, request)
 
-	assert.Equal(t, writer.Code, 400)
+	assert.Equal(t, writer.Code, 404)
+	assert.Contains(t, writer.Body.String(), "Page Not Found")
 }

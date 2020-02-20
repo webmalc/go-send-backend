@@ -22,6 +22,15 @@ func checkErrorAndAbort(err error, context *gin.Context) *gin.Error {
 	return nil
 }
 
+// Checks the provided error and returns the 404 page
+func checkErrorAnd404(err error, context *gin.Context) *gin.Error {
+	if err != nil {
+		context.HTML(http.StatusNotFound, "404.html", gin.H{})
+		return context.AbortWithError(http.StatusNotFound, err)
+	}
+	return nil
+}
+
 // browseHandler is a handler for listing directories
 func (contr *Controller) browseHandler() gin.HandlerFunc {
 	var browseHandler gin.HandlerFunc = func(context *gin.Context) {
@@ -58,11 +67,11 @@ func (contr *Controller) getDirectoryHandler() gin.HandlerFunc {
 		hash := context.Param("hash")
 		base := context.Param("base")
 		dir, err := contr.Manager.GetDirByHash(hash, base)
-		if checkErrorAndAbort(err, context) != nil {
+		if checkErrorAnd404(err, context) != nil {
 			return
 		}
 		zip, err := dir.generateZip()
-		if checkErrorAndAbort(err, context) != nil {
+		if checkErrorAnd404(err, context) != nil {
 			return
 		}
 		context.Header("Content-Description", "File Transfer")

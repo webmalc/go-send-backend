@@ -5,7 +5,7 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GORUN=$(GOCMD) run .
 GOCOV=$(GOCMD) tool cover -html=coverage.out
-GOTEST=$(GOCMD) test
+GOTEST=$(GOCMD) test -tags test
 GOGET=$(GOCMD) get
 BINARY_NAME=go_send_backend
 
